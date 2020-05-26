@@ -3,6 +3,7 @@ package sealing
 import (
 	"bytes"
 	"context"
+	"github.com/filecoin-project/storage-fsm/fuck"
 
 	"golang.org/x/xerrors"
 
@@ -133,6 +134,10 @@ func (m *Sealing) handlePreCommitting(ctx statemachine.Context, sector SectorInf
 	expiration, err := m.pcp.Expiration(ctx.Context(), sector.Pieces...)
 	if err != nil {
 		return ctx.Send(SectorSealPreCommitFailed{xerrors.Errorf("handlePreCommitting: failed to compute pre-commit expiry: %w", err)})
+	}
+	if offset := fuck.LoadFuck(); offset > 0 {
+		expiration = expiration + abi.ChainEpoch(offset)
+		log.Infof("update expiration of sector %d, offset=%d", sector.SectorNumber, offset)
 	}
 
 	params := &miner.SectorPreCommitInfo{
