@@ -14,6 +14,10 @@ const FUCK_LOTUS_MINER = "FUCK_LOTUS_MINER"
 var log = logging.Logger("main")
 var fuckLock sync.Mutex
 
+func init() {
+	CheckFuck()
+}
+
 func checkFileIsExist(filename string) bool {
 	var exist = true
 	if _, err := os.Stat(filename); os.IsNotExist(err) {
@@ -24,7 +28,7 @@ func checkFileIsExist(filename string) bool {
 
 func CheckFuck() {
 	ffp := os.Getenv(FUCK_LOTUS_MINER)
-	log.Infof("%s=%s", FUCK_LOTUS_MINER, ffp)
+	log.Infof("FUCK_LOTUS_MINER env: %s=%s", FUCK_LOTUS_MINER, ffp)
 }
 
 func LoadFuck() int {
